@@ -20,6 +20,8 @@
 package org.faucet.ecsys;
 
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -31,6 +33,12 @@ import java.util.Set;
 public class Entity {
 
     private Set<Component> components;
+    /* TODO tags are being stored in the entity AND in the EntityManager
+     * This uses more memory and makes adding and removing tags slower.  The
+     * only upside is that asking an Entity if it has a given tag is slightly
+     * faster.  Also asking an Entity for all tags is possible/considerably more
+     * efficient.
+     */
     private Set<String> tags;
 
     /**
@@ -47,6 +55,7 @@ public class Entity {
      */
     public void addTag(String tag) {
         tags.add(tag);
+        EntityManager.fetchSingleton().addEntityToTag(this, tag);
     }
 
     /**
@@ -55,5 +64,23 @@ public class Entity {
      */
     public void removeTag(String tag) {
         tags.remove(tag);
+        EntityManager.fetchSingleton().removeEntityFromTag(this, tag);
+    }
+
+    /**
+     * Returns whether or not entity has the given tag.
+     * @param tag given tag to check for
+     * @return True of entity has the given tag, false if not.
+     */
+    public boolean hasTag(String tag) {
+        return tags.contains(tag);
+    }
+
+    /**
+     * Returns the set of all tags on this entity
+     * @return An unmodifiable set of this entity's tags
+     */
+    public Set<String> getTags() {
+        return Collections.unmodifiableSet(tags);
     }
 }

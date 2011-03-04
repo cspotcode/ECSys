@@ -98,7 +98,7 @@ public class EntityManager {
      * OOP, convenient for games.
      * @return instance of EntityManager
      */
-    public EntityManager fetchSingleton() {
+    public static EntityManager fetchSingleton() {
         if(singleton == null) {
             singleton = new EntityManager();
         }
